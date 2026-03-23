@@ -18,140 +18,180 @@
     
 <script type="text/babel">
 
-/* 
-------------------------------------------------------------------------------------------------------------------
-*/
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            movies: movieData
+        };
+    }
+
+    saveChanges = (updatedMovie, index) => {
+        const movies = [...this.state.movies];
+        movies[index] = updatedMovie;
+        this.setState({ movies });
+    };
 
     render() {
-        // grab one sample movie
-        const sample = movieData[0];
-                
         return (
             <main className="container">
                 <section className="columns has-background-light">
-                <MovieList movies={ movieData }/>
-                <div className="column is-half">
 
-                        <MovieForm movie={sample}    />
-                </div>
+                    <MovieList movies={this.state.movies} />
+
+                    <div className="column is-half">
+                        {this.state.movies.map((m, index) =>
+                            <MovieForm
+                                key={m.id}
+                                index={index}
+                                movie={m}
+                                saveChanges={this.saveChanges}
+                            />
+                        )}
+                    </div>
+
                 </section>
-            </main>                
+            </main>
         );
     }
-
+}
+  
+class MovieList extends React.Component {
+    render() {
+        return (
+            <div className="column is-half">
+                <ul className="columns is-multiline">
+                    {this.props.movies.map(movie =>
+                        <SingleMovie key={movie.id} movie={movie} />
+                    )}
+                </ul>
+            </div>
+        );
+    }
 }
 
+class SingleMovie extends React.Component {
+    render() {
+        const m = this.props.movie;
 
-/* 
-------------------------------------------------------------------------------------------------------------------
-*/
+        return (
+            <li className="column is-one-third-desktop is-half-tablet">
+                <div className="card">
+                    <div className="card-image">
+                        <figure className="image is-2by3">
+                            <img
+                                src={"https://image.tmdb.org/t/p/w185" + m.poster}
+                                alt={m.title}
+                            />
+                        </figure>
+                    </div>
+
+                    <div className="card-content has-text-centered content-rectangle">
+                        <h2 className="title is-6">
+                            {m.title} ({m.runtime} min)
+                        </h2>
+                        <p className="is-size-7">{m.tagline}</p>
+                    </div>
+
+                    <footer className="card-footer">
+                        <MovieLink id={m.tmdbID} />
+                    </footer>
+                </div>
+            </li>
+        );
+    }
+}
+
+const MovieLink = props => {
+    return (
+        <a
+            className="button card-footer-item"
+            href={"https://www.themoviedb.org/movie/" + props.id}
+        >
+            <img src="images/tmdb.svg" width="30" />
+        </a>
+    );
+};
+
 class MovieForm extends React.Component {
+    constructor(props) {
+        super(props);
 
+        this.state = {
+            title: props.movie.title,
+            tagline: props.movie.tagline,
+            runtime: props.movie.runtime
+        };
+    }
+
+    handleChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value }, () => {
+            this.props.saveChanges(
+                {
+                    ...this.props.movie,
+                    ...this.state
+                },
+                this.props.index
+            );
+        });
+    };
 
     render() {
         return (
-            <form className="panel has-background-grey-lighter"  >
+            <form className="panel has-background-grey-lighter">
 
                 <div className="field is-horizontal">
                     <div className="field-label is-normal">
                         <label className="label">Title</label>
                     </div>
                     <div className="field-body">
-                        <input className="input" type="text" name="title"
-                            value="sample title" />   
+                        <input
+                            className="input"
+                            type="text"
+                            name="title"
+                            value={this.state.title}
+                            onChange={this.handleChange}
+                        />
                     </div>
-                </div>   
+                </div>
 
                 <div className="field is-horizontal">
                     <div className="field-label is-normal">
                         <label className="label">Tagline</label>
                     </div>
                     <div className="field-body">
-                        <textarea className="textarea" rows="2"  name="tagline"
-                            value="sample tagline"></textarea>
+                        <textarea
+                            className="textarea"
+                            rows="2"
+                            name="tagline"
+                            value={this.state.tagline}
+                            onChange={this.handleChange}
+                        />
                     </div>
-                </div>                  
+                </div>
 
                 <div className="field is-horizontal">
                     <div className="field-label is-normal">
                         <label className="label">Runtime</label>
                     </div>
                     <div className="field-body">
-                        <input className="input" type="text" name="runtime"
-                            value="sample runtime"/>   
+                        <input
+                            className="input"
+                            type="text"
+                            name="runtime"
+                            value={this.state.runtime}
+                            onChange={this.handleChange}
+                        />
                     </div>
-                </div>    
-                                                  
+                </div>
+
             </form>
         );
     }
 }
 
-/* 
-------------------------------------------------------------------------------------------------------------------
-*/
-class MovieList extends React.Component {
+ReactDOM.render(<App />, document.querySelector('#react-container'));
 
-
-render() {
-    return (
-        <div className="column is-half">
-            <ul className="columns is-multiline">
-                <SingleMovie  /> 
-            </ul>   
-        </div>   
-    );
-  }
-
-}
-
-/* 
-------------------------------------------------------------------------------------------------------------------
-*/
-class SingleMovie extends React.Component {
-
-
-render() {
-    return (
-        <li className="column is-one-third-desktop is-half-tablet"  >
-            <div className="card">
-                <div className="card-image">
-                <figure className="image is-2by3">
-                    <img src="https://image.tmdb.org/t/p/w185/sm8iVzA7kRp0d4BSIsgXjsSBMKV.jpg"  alt="Sample Title" />
-                </figure>
-                </div>
-                <div className="card-content has-text-centered content-rectangle">
-                    <h2 className="title is-6">Sample Title (000 min)</h2>
-                    <p className="is-size-7">Sample tagline</p>
-                </div>    
-                <footer className="card-footer">
-                    <MovieLink id="sm8iVzA7kRp0d4BSIsgXjsSBMKV" />
-                </footer>                                      
-            </div>                
-        </li>
-    )
-
-}
-
-}
-
-
-/* 
-------------------------------------------------------------------------------------------------------------------
-*/
-const MovieLink = props => {
-  return (
-        <a className="button card-footer-item" 
-            href={ "https://www.themoviedb.org/movie/" + props.id } >
-
-                <img src="images/tmdb.svg" width="30" />
-        </a>    
-    );
-};
-    
-ReactDOM.render(<App />, document.querySelector('#react-container')); 
-  
 </script> 
         
         
