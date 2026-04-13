@@ -44,6 +44,10 @@ app.get('/year/:min/:max', (req, res) => {
 
 // ==================================================
 
+<<<<<<< HEAD
 app.listen(3000, '0.0.0.0', () => {
+=======
+app.listen(3000, '0.0.0.0' => {
+>>>>>>> c4b3b94 (go)
   console.log(`Server running on http://localhost:${port}`);
 });
