@@ -1,22 +1,35 @@
 <?php
-include 'includes/travel-config.inc.php';
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
-/*
- * Find the PDO connection created by travel-config.inc.php.
- * This makes the page a little more tolerant of whatever variable name
- * your instructor used in the config file.
- */
-function getPDOConnection(): PDO {
-    foreach ($GLOBALS as $value) {
-        if ($value instanceof PDO) {
-            $value->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $value;
-        }
-    }
-    throw new Exception('No PDO connection found. Check includes/travel-config.inc.php');
+require_once 'includes/travel-config.inc.php';
+
+
+// /* /*
+//  * Find the PDO connection created by travel-config.inc.php.
+//  * This makes the page a little more tolerant of whatever variable name
+//  * your instructor used in the config file.
+//  */
+// function getPDOConnection(): PDO {
+//     foreach ($GLOBALS as $value) {
+//         if ($value instanceof PDO) {
+//             $value->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+//             return $value;
+//         }
+//     }
+//     throw new Exception('No PDO connection found. Check includes/travel-config.inc.php');
+// }
+
+// $pdo = getPDOConnection(); */
+
+try {
+    $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
-
-$pdo = getPDOConnection();
 
 $continent = $_GET['continent'] ?? '0';
 $country   = $_GET['country'] ?? '0';
@@ -112,8 +125,8 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($images as $img) : ?>
                     <li>
                         <a href="detail.php?id=<?= urlencode($img['ImageID']) ?>">
-                            <img src="images/travel/square-medium/<?= htmlspecialchars($img['Path']) ?>"
-                                 alt="<?= htmlspecialchars($img['Title'] ?? 'Travel photo') ?>">
+                           <img src="images/square150/<?= htmlspecialchars($img['Path']) ?>"
+     alt="<?= htmlspecialchars($img['Title'] ?? 'Travel photo') ?>"> 
                         </a>
                     </li>
                 <?php endforeach; ?>
