@@ -1,12 +1,10 @@
 <?php
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Chapter 15</title>
+    <title>other page</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
@@ -16,7 +14,7 @@
 
     <link rel="stylesheet" href="css/styles.css">
     
-    <script   src="https://code.jquery.com/jquery-1.7.2.min.js" ></script>
+    <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
     <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
   
 </head>
@@ -42,8 +40,17 @@
                 <div class="mdl-card__supporting-text">
                     
                     <?php
+                    if (isset($_COOKIE['theme'])) {
+                        echo "<p><strong>Theme cookie:</strong> " . htmlspecialchars($_COOKIE['theme']) . "</p>";
+                    } else {
+                        echo "<p><strong>Theme cookie:</strong> not available</p>";
+                    }
 
-                   
+                    if (isset($_COOKIE['philosopher'])) {
+                        echo "<p><strong>Philosopher cookie:</strong> " . htmlspecialchars($_COOKIE['philosopher']) . "</p>";
+                    } else {
+                        echo "<p><strong>Philosopher cookie:</strong> not available</p>";
+                    }
                     ?> 
                     
                     
@@ -58,11 +65,11 @@
             </div>   
            
            
-            </div>  <!-- / mdl-grid -->    
+            </div>
 
         </section>
     </main>    
-</div>    <!-- / mdl-layout --> 
+</div>
           
 </body>
 </html>
